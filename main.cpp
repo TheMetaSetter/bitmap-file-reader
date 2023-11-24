@@ -2,6 +2,8 @@
 #pragma pack(1)
 
 #include <bits/stdc++.h>
+#include <sstream>
+
 using namespace std;
 
 
@@ -27,7 +29,7 @@ struct BMP_DIB
 	int32_t VerticalResolution;
 	int32_t NumOfColor;
 	int32_t ImportanColor;
-	int32_t PaletteSize; // du
+	int32_t PaletteSize; 
 };
 
 struct Color
@@ -69,14 +71,13 @@ string getFileName(int argc, char* argv[])
     else if (argc == 2) return (string)argv[1];
     else
     {
-        cerr << "Invalid argument !!";
+        cerr << "Error: Invalid argument !!";
         exit(1);
     }
 }
 
 void readBMPFile(string filename, BMP& bmp)
 {
-    cerr << filename << endl;
     ifstream Fin(filename, ios::binary);
     if (!Fin.is_open())
     {
@@ -160,14 +161,13 @@ void readBMPFile(string filename, BMP& bmp)
     }
     Fin.close();
 
-    cerr << "Read BMP images successfully" << endl;
 }
 
 void writePaletteToFile(const BMP_ColorTable& colortable)
 {
-    ofstream paletteFile("E:\\VS code\\Year 2\\Term 1\\DSA\\Bitmap\\Bitmap\\palette.txt");
+    ofstream Fout("palette.txt");
 
-    if (!paletteFile.is_open())
+    if (!Fout.is_open())
     {
         cerr << "Error: Unable to open file for writing palette" << endl;
         exit(1);
@@ -175,32 +175,29 @@ void writePaletteToFile(const BMP_ColorTable& colortable)
 
     if (colortable.CLSize > 0)
     {
-        cout << colortable.CLSize << endl; // Writing the number of colors in the palette
+        Fout << colortable.CLSize << endl; // Writing the number of colors in the palette
 
         for (int i = 0; i < colortable.CLSize; i++)
         {
-            paletteFile << static_cast<int>(colortable.color[i].red) << " "
-                << static_cast<int>(colortable.color[i].green) << " "
-                << static_cast<int>(colortable.color[i].blue) << endl;
+            Fout << "#" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(colortable.color[i].red) << ""
+                << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(colortable.color[i].green) << ""
+                << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(colortable.color[i].blue) << endl;
         }
-
-        cerr << "Write palette data to palette.txt successfully " << endl;
     }
-    else
-    {
-        cerr << "No data for palette " << endl;
-    }
-    paletteFile.close();
+    Fout.close();
 }
 
 void writePixelArrayToFile (BMP& bmp) 
 {
-    ofstream fout("E:\\VS code\\Year 2\\Term 1\\DSA\\Bitmap\\Bitmap\\pixel.txt");
+    ofstream fout("pixel.txt");
+
     if (!fout.is_open()) 
     {
-        cout << "Error: Unable to open file pixel.txt " << endl;
+        cerr << "Error: Unable to open file pixel.txt " << endl;
         return;
     }
+
+    fout << bmp.dib.IMG_Width << " x " << bmp.dib.IMG_Height << endl;
 
     if (bmp.dib.PixelSize == 8) 
     {
@@ -209,7 +206,6 @@ void writePixelArrayToFile (BMP& bmp)
             for (int j = 0; j < bmp.pixelarray.Col; j++)
             {
                 fout << static_cast<int>(bmp.pixelarray.indices[i][j]) << " ";
-                fout << endl;
             }
             fout << endl;
         }
@@ -220,17 +216,15 @@ void writePixelArrayToFile (BMP& bmp)
         {
             for (int j = 0; j < bmp.pixelarray.Col; j++) 
             {
-                fout << static_cast<int>(bmp.pixelarray.pixel[i][j].red) << " "
-                    << static_cast<int>(bmp.pixelarray.pixel[i][j].green) << " "
-                    << static_cast<int>(bmp.pixelarray.pixel[i][j].blue) << " ";
-                fout << endl;
+                fout << "#" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(bmp.pixelarray.pixel[i][j].red) << ""
+                    << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(bmp.pixelarray.pixel[i][j].green) << ""
+                    << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(bmp.pixelarray.pixel[i][j].blue) << " ";
             }
             fout << endl;
         }
     }
 
     fout.close();
-    cerr << "Write pixel array to pixel.txt successfully " << endl;
 }
 
 void deleteBMP(BMP& bmp) 
@@ -265,9 +259,16 @@ int main(int argc, char* argv[])
     string filename = getFileName(argc, argv);
     readBMPFile(filename, bmp);
 
-    cerr << bmp.dib.PixelSize << endl;
-    cerr << bmp.dib.IMG_Width << endl;
-    cerr << bmp.dib.IMG_Height << endl;
+    cerr << filename << endl;
+    cerr << "Bit depth: " << bmp.dib.PixelSize << "-bit" << endl;
+    cerr << "Width: " << bmp.dib.IMG_Width << " pixels" << endl;
+    cerr << "Height: " << bmp.dib.IMG_Height << " pixels" << endl;
+    if (bmp.colortable.CLSize > 0)
+    {
+        cout << "Color Palette: Yes" << endl;
+    }
+    else cout << "Color Palette: No" << endl;
+
 
     writePaletteToFile(bmp.colortable);
     writePixelArrayToFile(bmp);
