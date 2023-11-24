@@ -179,9 +179,9 @@ void writePaletteToFile(const BMP_ColorTable& colortable)
 
         for (int i = 0; i < colortable.CLSize; i++)
         {
-            Fout << "#" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(colortable.color[i].red) << ""
-                << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(colortable.color[i].green) << ""
-                << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(colortable.color[i].blue) << endl;
+            Fout << "#" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(colortable.color[i].red) << ""
+                << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(colortable.color[i].green) << ""
+                << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(colortable.color[i].blue) << endl;
         }
     }
     Fout.close();
@@ -216,9 +216,9 @@ void writePixelArrayToFile (BMP& bmp)
         {
             for (int j = 0; j < bmp.pixelarray.Col; j++) 
             {
-                fout << "#" << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(bmp.pixelarray.pixel[i][j].red) << ""
-                    << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(bmp.pixelarray.pixel[i][j].green) << ""
-                    << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(bmp.pixelarray.pixel[i][j].blue) << " ";
+                fout << "#" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(bmp.pixelarray.pixel[i][j].red) << ""
+                    << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(bmp.pixelarray.pixel[i][j].green) << ""
+                    << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(bmp.pixelarray.pixel[i][j].blue) << " ";
             }
             fout << endl;
         }
